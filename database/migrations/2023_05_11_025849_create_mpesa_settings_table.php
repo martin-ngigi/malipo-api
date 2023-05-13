@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('mpesa_environment')->nullable();
             $table->string('sanbox_base_url')->nullable();
             $table->string('live_base_url')->nullable();
+            $table->string('safaricom_passkey')->nullable();
             $table->timestamps();
         });
     }

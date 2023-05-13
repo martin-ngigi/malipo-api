@@ -25,6 +25,8 @@ Route::group(['prefix' => '/v1'], function () {
     Route::group(['prefix'=>'/mpesa'], function() {
         //      /v1/mpesa/generate-access-token
         Route::get('/generate-access-token', [MpesaController::class, 'generateAccessToken']);
+        Route::post('/simulate-stk-push', [MpesaController::class, 'simulateSTKPush']);
+
     });
 });
 
