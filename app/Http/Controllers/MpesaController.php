@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Mpesa\MpesaSetting;
+use App\Models\Mpesa\MpesaSTKPush;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
@@ -152,6 +153,16 @@ class MpesaController extends Controller
         'data'=>$mpesa_response_data,
         // 'was_stk_sent' => $mpesa_response_data->ResponseCode == "0" ?true : false
       );
+
+      //save to db... But first convert to Array so as to extract the required data.
+      $mpesa_response_data = (array)$mpesa_response_data;
+
+      MpesaSTKPush::create([
+        'merchant_request_id' => $mpesa_response_data['MerchantRequestID'],
+        'checkout_request_id' =>  $mpesa_response_data['CheckoutRequestID']
+      ]);
+
+
       return $message;
           
       

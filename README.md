@@ -26,3 +26,7 @@ php artisan serve
 ```
 php artisan make:controller MpesaController
 ```
+- Create STKPush Model
+```
+php artisan make:model Mpesa/MpesaSTKPush -m
+```

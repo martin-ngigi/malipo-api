@@ -28,5 +28,7 @@ Route::group(['prefix' => '/v1'], function () {
         Route::post('/simulate-stk-push', [MpesaController::class, 'simulateSTKPush']);
 
     });
+    Route::post('/callback/query', [MpesaController::class, 'queryCallbak']);
+
 });
 
