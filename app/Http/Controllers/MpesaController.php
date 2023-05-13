@@ -138,7 +138,7 @@ class MpesaController extends Controller
 
       if($err){
         return response()->json([
-          "message" => "Error occurred while generating access token.",
+          "message" => "Error occurred while generating stk push token.",
           "status" => "false",
           "error" => $err
         ]);
@@ -168,8 +168,73 @@ class MpesaController extends Controller
       
     }
 
+    public function queryTransaction(Request $request){
+
+    $checkoutRequestId = $request->checkout_request_id;
+
+    $gen_access_token_response = $this->generateAccessToken();
+    $access_token = $gen_access_token_response['mpesa_data']->access_token; // get access_token from generateAccessToken() method
+    $password = $this->lipaNaMpesaPassword();
+    $timestamp = Carbon::rawParse('now')->format('YmdHms');
+
+    $mpesaKeys=MpesaSetting::where('id', 1)->first();
+    $till_number =$mpesaKeys->till_number;
+    $sandbox_base_url =$mpesaKeys->sanbox_base_url;
 
 
+
+
+    $post_data = [
+      'BusinessShortCode' => $till_number,
+      'Password' => $password,
+      'Timestamp' => $timestamp,
+      'CheckoutRequestID' => $checkoutRequestId
+    ];
+
+    $url = "/mpesa/stkpushquery/v1/query";
+
+    $curl = curl_init();
+            
+    $headers = [
+      "Cache-Control: no-cache",
+      "Accept: application/json",
+      "Content-Type: application/json",
+      "Authorization: Bearer ".$access_token,
+    ];
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $sandbox_base_url.$url);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post_data));
+
+    $result = curl_exec($ch);
+    $err = curl_error($curl);
+
+    if($err){
+      return response()->json([
+        "message" => "Error occurred while obtaining query transaction status.",
+        "status" => "false",
+        "error" => $err
+      ]);
+    }
+    curl_close($ch);
+
+    $mpesa_response_data = json_decode($result);
+
+    $message = array(
+      'status'=>$mpesa_response_data!=null?true:false,
+      'message' => 'Received Mpesa response ...',
+      'data'=>$mpesa_response_data,
+      // 'was_stk_sent' => $mpesa_response_data->ResponseCode == "0" ?true : false
+    );
+
+    return $message;
+
+
+    }
     
 
 

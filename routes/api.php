@@ -26,9 +26,9 @@ Route::group(['prefix' => '/v1'], function () {
         //      /v1/mpesa/generate-access-token
         Route::get('/generate-access-token', [MpesaController::class, 'generateAccessToken']);
         Route::post('/simulate-stk-push', [MpesaController::class, 'simulateSTKPush']);
+        Route::post('/query-trsansaction', [MpesaController::class, 'queryTransaction']);
 
     });
-    Route::post('/callback/query', [MpesaController::class, 'queryCallbak']);
 
 });
 
