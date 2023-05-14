@@ -21,14 +21,19 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 //      /v1
 Route::group(['prefix' => '/v1'], function () {
-    //      /v1/mpesa
+    //      /api/v1/mpesa
     Route::group(['prefix'=>'/mpesa'], function() {
-        //      /v1/mpesa/generate-access-token
+        //      /api/v1/mpesa/generate-access-token
         Route::get('/generate-access-token', [MpesaController::class, 'generateAccessToken']);
         Route::post('/simulate-stk-push', [MpesaController::class, 'simulateSTKPush']);
         Route::post('/query-trsansaction', [MpesaController::class, 'queryTransaction']);
+        Route::get('/test', [MpesaController::class, 'testMethod']);
 
     });
+
+    //  /api/v1/confirm-m-payments
+    Route::post('/confirm-m-payments', [MpesaController::class, 'confirmCallbackMpesaPayments']);
+
 
 });
 
